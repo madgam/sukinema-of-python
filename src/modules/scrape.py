@@ -79,8 +79,13 @@ class Scrape():
                         self.title = common.Common.cleansing(tdata[0].text)
 
                         json = tmdb.Tmdb.dataGet(self.title)
+                        self.dropPath = ''
+                        self.posterPath = ''
+                        self.releaseDate = ''
+                        self.review = ''
                         if len(json['results']) != 0:
                             json = json['results'][0]
+
                             if json['backdrop_path'] != None:
                                 self.dropPath = json['backdrop_path']
 
