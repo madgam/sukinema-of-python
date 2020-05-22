@@ -40,6 +40,9 @@ class Registry():
         try:
             cur.execute(sql)
             conn.commit()
-        except:
+        except Exception as e:
             conn.rollback()
             raise
+        finally:
+            cur.close()
+            conn.close()

@@ -70,9 +70,9 @@ class Scrape():
                         continue
 
                     # 映画館の緯度経度を取得
-                    latlong = geocoder.Geocoder.getLatlong(self.theater)
-                    self.latitude = latlong['latitude']
-                    self.longitude = latlong['longitude']
+                    # latlong = geocoder.Geocoder.getLatlong(self.theater)
+                    # self.latitude = latlong['latitude']
+                    # self.longitude = latlong['longitude']
 
                     tdata = t.find_all('td')
                     if len(tdata) == 2:
