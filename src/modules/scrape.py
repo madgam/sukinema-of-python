@@ -82,7 +82,7 @@ class Scrape():
                         self.dropPath = ''
                         self.posterPath = ''
                         self.releaseDate = ''
-                        self.review = ''
+                        self.review = '0.0'
                         if len(json['results']) != 0:
                             json = json['results'][0]
 
