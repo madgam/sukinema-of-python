@@ -1,11 +1,10 @@
-from modules import scrape, delete
+from modules import scrape
 
 
 class Main():
 
     @classmethod
     def init(cls):
-        delete.Delete.delete()
         sc = scrape.Scrape()
         sc.getData()
 

@@ -2,7 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 import pandas as pd
-from modules import geocoder, registry, common, tmdb
+from modules import geocoder, common, tmdb, delete
+from urllib.parse import urlparse
+import mysql.connector
+import os
 
 
 class Scrape():
@@ -16,11 +19,11 @@ class Scrape():
         self.description = ''
         self.link = ''
         self.time = ''
-        self.allTime = ''
+        self.all_time = ''
         self.review = 0.0
-        self.releaseDate = ''
-        self.dropPath = ''
-        self.posterPath = ''
+        self.release_date = ''
+        self.drop_path = ''
+        self.poster_path = ''
 
     def getData(self):
 
@@ -29,7 +32,22 @@ class Scrape():
         detail_base_url = 'https://eigakan.org/movies/detail/'
         dt_now = datetime.datetime.now()
         dt_now_y4m2d2 = dt_now.strftime('%Y%m%d')
-        reg = registry.Registry()
+
+        url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
+        conn = mysql.connector.connect(
+            host=url.hostname,
+            port=url.port,
+            user=url.username,
+            password=url.password,
+            database=url.path[1:],
+        )
+        conn.ping(reconnect=True)
+        cur = conn.cursor()
+
+        sql = 'insert into movies (' + ', '.join([str(k) for k in self.__dict__.keys(
+        )]) + ') VALUES '
+
+        sql_values = []
 
         for prefID in range(47, 0, -1):
             url = base_url + SLASH + str(prefID) + \
@@ -79,20 +97,20 @@ class Scrape():
                         self.title = common.Common.cleansing(tdata[0].text)
 
                         json = tmdb.Tmdb.dataGet(self.title)
-                        self.dropPath = ''
-                        self.posterPath = ''
-                        self.releaseDate = ''
+                        self.drop_path = ''
+                        self.poster_path = ''
+                        self.release_date = ''
                         self.review = '0.0'
                         if len(json['results']) != 0:
                             json = json['results'][0]
 
                             if json['backdrop_path'] != None:
-                                self.dropPath = json['backdrop_path']
+                                self.drop_path = json['backdrop_path']
 
                             if json['poster_path'] != None:
-                                self.posterPath = json['poster_path']
+                                self.poster_path = json['poster_path']
 
-                            self.releaseDate = json['release_date']
+                            self.release_date = json['release_date']
                             self.review = '{:.1f}'.format(
                                 json['vote_average'] / 2)
 
@@ -111,10 +129,24 @@ class Scrape():
 
                         allTimeAry = [x.split('～')[0].strip() for x in tdata[1].text.split(
                             "/") if not tdata[1].text == '']
-                        self.allTime = ','.join(allTimeAry)
+                        self.all_time = ','.join(allTimeAry)
 
                         for oneTime in allTimeAry:
                             self.time = oneTime.split('～')[0]
 
-                            reg.addData(**self.__dict__)
+                            common.Common.createValuesQuery(
+                                sql_values, **self.__dict__)
                 page += 1
+
+        sql += ','.join(sql_values) + ';'
+
+        try:
+            delete.Delete.delete()
+            cur.execute(sql)
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            raise
+        finally:
+            cur.close()
+            conn.close()
