@@ -1,23 +1,23 @@
 
-import datetime
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+from urllib.parse import urlparse
+import mysql.connector
+import os
 
 
 class Registry():
 
     def addData(self, title, pref, theater, latitude, longitude, description, link, time, allTime, review, releaseDate, dropPath, posterPath):
-        cred = credentials.Certificate("path/to/serviceAccountKey.json")
-        # app = firebase_admin.initialize_app(cred)
+        url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
+        conn = mysql.connector.connect(
+            host=url.hostname,
+            port=url.port,
+            user=url.username,
+            password=url.password,
+            database=url.path[1:],
+        )
+        conn.ping(reconnect=True)
+        cur = conn.cursor()
 
-        if len(firebase_admin._apps) == 0:
-            # アプリを初期化する
-            default_app = firebase_admin.initialize_app(cred)
-
-        # FIREBASEへの登録
-        UB = '_'
-        client = firestore.client()
         movie = {
             'title': title,
             'pref': pref,
@@ -27,16 +27,19 @@ class Registry():
             'description': description,
             'link': link,
             'time': time,
-            'allTime': allTime,
+            'all_time': allTime,
             'review': str(review),
-            'releaseDate': releaseDate,
-            'dropPath': dropPath,
-            'posterPath': posterPath
+            'release_date': releaseDate,
+            'drop_path': dropPath,
+            'poster_path': posterPath
         }
 
-        dt_now = datetime.datetime.now()
-        dt_now_y4m2d2 = dt_now.strftime('%Y%m%d')
+        sql = 'insert into movies (' + ', '.join([str(k) for k in movie.keys(
+        )]) + ') VALUES (' + ', '.join(['\'' + str(v) + '\'' for v in movie.values()]) + ')'
 
-        doc_ref = client.collection('movies').document(
-            dt_now_y4m2d2 + UB + pref + UB + theater + UB + title + UB + time)
-        doc_ref.set(movie)
+        try:
+            cur.execute(sql)
+            conn.commit()
+        except:
+            conn.rollback()
+            raise

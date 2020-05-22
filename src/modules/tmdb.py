@@ -53,6 +53,4 @@ class Tmdb():
         decodedData = readObj.read().decode('utf-8')
         response = json.loads(decodedData)
 
-        # print type(response)  # >> <type 'str'>
-
         return response
