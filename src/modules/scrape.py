@@ -102,7 +102,19 @@ class Scrape():
                         self.release_date = ''
                         self.review = '0.0'
                         if len(json['results']) != 0:
-                            json = json['results'][0]
+
+                            sorted_json = sorted(
+                                json['results'],
+                                key=lambda x: (
+                                    x.get(
+                                        'popularity', '0.0'),
+                                    x.get(
+                                        'release_date', '0000-00-00')
+                                ),
+                                reverse=True
+                            )
+
+                            json = sorted_json[0]
 
                             if json['backdrop_path'] != None:
                                 self.drop_path = json['backdrop_path']
