@@ -13,7 +13,10 @@ class Geocoder():
         result = gmaps.geocode(location)
 
         latlong = {}
-        latlong['latitude'] = result[0]['geometry']['location']['lat']
-        latlong['longitude'] = result[0]['geometry']['location']['lng']
+        latlong['latitude'] = ''
+        latlong['longitude'] = ''
+        if len(result) != 0:
+            latlong['latitude'] = result[0]['geometry']['location']['lat']
+            latlong['longitude'] = result[0]['geometry']['location']['lng']
 
         return latlong
