@@ -14,9 +14,9 @@ class Tmdb():
     @classmethod
     def dataGet(cls, query):
 
-        # 映画タイトルに字幕、吹替、IMAXが入っている場合はTrue
+        # 映画タイトルに字幕、吹替、IMAX、4Dが入っている場合はTrue
         def _isInMovieInfo(target):
-            word = ['字幕', '吹替', 'IMAX']
+            word = ['字幕', '吹替', 'IMAX', '4D']
             for w in word:
                 if w in target:
                     return True
