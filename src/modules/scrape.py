@@ -49,7 +49,7 @@ class Scrape():
 
         sql_values = []
 
-        for prefID in range(47, 0, -1):
+        for prefID in range(8, 15):
             url = base_url + SLASH + str(prefID) + \
                 SLASH + dt_now_y4m2d2
 
