@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 import mysql.connector
 import os
 import sys
+import time
 
 
 class Scrape():
@@ -139,9 +140,12 @@ class Scrape():
                                 sql_values, **self.__dict__)
                 page += 1
 
+        start = time.time()
         try:
             delete.Delete.delete()
             ins = insert.Insert()
             ins.insert(sql_values)
         except Exception as e:
             raise
+        elapsed_time = time.time() - start
+        print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
