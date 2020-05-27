@@ -8,8 +8,10 @@ class Delete():
     @classmethod
     def delete(cls):
 
+        sql = 'DELETE FROM MOVIES'
+
         url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
-        conn = mysql.connector.connect(
+        conn = mysql.connector.MySQLConnection(
             host=url.hostname,
             port=url.port,
             user=url.username,
@@ -18,8 +20,6 @@ class Delete():
         )
         conn.ping(reconnect=True)
         cur = conn.cursor()
-
-        sql = 'DELETE FROM MOVIES'
 
         try:
             cur.execute(sql)
