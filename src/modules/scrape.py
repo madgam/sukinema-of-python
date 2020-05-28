@@ -100,7 +100,7 @@ class Scrape():
                                     class_='j2')[0].text.split('\n')
                                 _release_year = _release_date_split[3].replace(
                                     ' ', '').split('年')[0]
-                                _release_month_date = _release_date_split[5].replace(
+                                _release_month_date = _release_date_split[4].replace(
                                     ' ', '').split('より')[0].split('公開')[0]
                                 _release_month = _release_month_date.split('月')[
                                     0].zfill(2)
