@@ -37,7 +37,7 @@ class Scrape():
 
         sql_values = []
 
-        for prefID in range(8, 15):
+        for prefID in range(8, 9):
             url = base_url + SLASH + str(prefID) + \
                 SLASH + dt_now_y4m2d2
 
@@ -76,9 +76,9 @@ class Scrape():
                         continue
 
                     # 映画館の緯度経度を取得
-                    latlong = geocoder.Geocoder.getLatlong(self.theater)
-                    self.latitude = latlong['latitude']
-                    self.longitude = latlong['longitude']
+                    # latlong = geocoder.Geocoder.getLatlong(self.theater)
+                    # self.latitude = latlong['latitude']
+                    # self.longitude = latlong['longitude']
 
                     tdata = t.find_all('td')
                     if len(tdata) == 2:
@@ -86,6 +86,7 @@ class Scrape():
 
                         a = tdata[0].find('a')
                         self.description = ''
+                        self.release_date = ''
                         if a != None:
                             detail_base_uri = detail_base_url + a.get('href').split(',')[
                                 1].replace('/movies/detail/', '').replace('\'', '')
@@ -94,13 +95,28 @@ class Scrape():
                             soup_child = BeautifulSoup(
                                 res_detail.text, 'html.parser')
 
+                            try:
+                                _release_date_split = soup_child.find_all(
+                                    class_='j2')[0].text.split('\n')
+                                _release_year = _release_date_split[3].replace(
+                                    ' ', '').split('年')[0]
+                                _release_month_date = _release_date_split[5].replace(
+                                    ' ', '').split('より')[0].split('公開')[0]
+                                _release_month = _release_month_date.split('月')[
+                                    0].zfill(2)
+                                _release_date = _release_month.replace(
+                                    '日', '').zfill(2)
+
+                                self.release_date = _release_year + '-' + _release_month + '-' + _release_date
+                            except Exception as e:
+                                self.release_date = ''
+
                             self.description = common.Common.cleansing(soup_child.find_all(class_='j2')[
                                 1].text.split('\n')[0])
 
                         json = tmdb.Tmdb.dataGet(self.title)
                         self.drop_path = ''
                         self.poster_path = ''
-                        self.release_date = ''
                         self.review = '0.0'
                         if len(json['results']) != 0:
 
@@ -123,7 +139,9 @@ class Scrape():
                             if json['poster_path'] != None:
                                 self.poster_path = json['poster_path']
 
-                            self.release_date = json['release_date']
+                            if not self.release_date:
+                                self.release_date = json['release_date']
+
                             self.review = '{:.1f}'.format(
                                 json['vote_average'] / 2)
                             if not self.description:
