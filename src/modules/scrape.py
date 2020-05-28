@@ -37,7 +37,7 @@ class Scrape():
 
         sql_values = []
 
-        for prefID in range(8, 9):
+        for prefID in range(1, 48):
             url = base_url + SLASH + str(prefID) + \
                 SLASH + dt_now_y4m2d2
 
@@ -76,9 +76,9 @@ class Scrape():
                         continue
 
                     # 映画館の緯度経度を取得
-                    # latlong = geocoder.Geocoder.getLatlong(self.theater)
-                    # self.latitude = latlong['latitude']
-                    # self.longitude = latlong['longitude']
+                    latlong = geocoder.Geocoder.getLatlong(self.theater)
+                    self.latitude = latlong['latitude']
+                    self.longitude = latlong['longitude']
 
                     tdata = t.find_all('td')
                     if len(tdata) == 2:
