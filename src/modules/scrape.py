@@ -13,6 +13,8 @@ import time
 class Scrape():
 
     def __init__(self):
+
+        self.id = 0
         self.title = ''
         self.pref = ''
         self.theater = ''
@@ -37,7 +39,8 @@ class Scrape():
 
         sql_values = []
 
-        for prefID in range(1, 48):
+        count = 1
+        for prefID in range(8, 15):
             url = base_url + SLASH + str(prefID) + \
                 SLASH + dt_now_y4m2d2
 
@@ -152,10 +155,12 @@ class Scrape():
                         self.all_time = ','.join(allTimeAry)
 
                         for oneTime in allTimeAry:
+                            self.id = count
                             self.time = oneTime.split('～')[0].split('※')[0]
 
                             common.Common.createValuesQuery(
                                 sql_values, **self.__dict__)
+                            count += 1
                 page += 1
 
         start = time.time()

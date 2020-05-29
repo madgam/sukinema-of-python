@@ -7,6 +7,7 @@ class Insert():
 
     def __init__(self):
 
+        self.id = 0
         self.title = ''
         self.pref = ''
         self.theater = ''
@@ -24,7 +25,7 @@ class Insert():
     def insert(self, sql_values):
 
         sql = 'INSERT INTO MOVIES (' + ', '.join([str(k) for k in self.__dict__.keys(
-        )]) + ') VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        )]) + ') VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
 
         url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
         conn = mysql.connector.MySQLConnection(

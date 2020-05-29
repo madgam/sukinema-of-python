@@ -3,6 +3,7 @@ class Common():
 
     @classmethod
     def cleansing(cls, target):
+
         s = target.replace('\u3000', ' ')
         s = s.replace('\xa0', '')
         s = s.replace('(', '（')
@@ -11,9 +12,9 @@ class Common():
         return s.strip()
 
     @classmethod
-    def createValuesQuery(cls, sql_values, title, pref, theater, latitude, longitude, description, link, time, all_time, review, release_date, drop_path, poster_path):
+    def createValuesQuery(cls, sql_values, id, title, pref, theater, latitude, longitude, description, link, time, all_time, review, release_date, drop_path, poster_path):
 
-        movie = (title, pref, theater, latitude, longitude, description,
+        movie = (id, title, pref, theater, latitude, longitude, description,
                  link, time, all_time, review, release_date, drop_path, poster_path)
 
         sql_values.append(movie)
