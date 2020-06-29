@@ -1,12 +1,10 @@
-import urllib.parse
-import urllib.request
-import json
-import sys
-import codecs
-import os
 import ast
-
-# webAPIからJSONの形式の文字列の結果をもらう
+import codecs
+import json
+import os
+import sys
+import urllib.parse as parse
+import urllib.request as request
 
 
 class Tmdb():
@@ -45,10 +43,10 @@ class Tmdb():
 
         # URIパラメータの文字列の作成
         # type=json&user=tamago324_pad と整形される
-        paramStr = urllib.parse.urlencode(param)
+        paramStr = parse.urlencode(param)
 
         # 読み込むオブジェクトの作成
-        readObj = urllib.request.urlopen(url + paramStr)
+        readObj = request.urlopen(url + paramStr)
 
         decodedData = readObj.read().decode('utf-8')
         response = json.loads(decodedData)

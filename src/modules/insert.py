@@ -1,6 +1,7 @@
-from urllib.parse import urlparse
-import mysql.connector
 import os
+from urllib.parse import urlparse
+
+from mysql.connector import MySQLConnection
 
 
 class Insert():
@@ -28,7 +29,7 @@ class Insert():
         )]) + ') VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
 
         url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
-        conn = mysql.connector.MySQLConnection(
+        conn = MySQLConnection(
             host=url.hostname,
             port=url.port,
             user=url.username,

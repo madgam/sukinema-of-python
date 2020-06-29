@@ -1,13 +1,20 @@
-import requests
-from bs4 import BeautifulSoup
 import datetime
-import pandas as pd
-from modules import geocoder, common, tmdb, delete, insert
-from urllib.parse import urlparse
-import mysql.connector
 import os
 import sys
 import time
+from urllib.parse import urlparse
+
+import mysql.connector
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+
+# from modules import common, delete, geocoder, insert, tmdb
+from modules.common import Common
+from modules.delete import Delete
+from modules.geocoder import Geocoder
+from modules.insert import Insert
+from modules.tmdb import Tmdb
 
 
 class Scrape():
@@ -40,7 +47,7 @@ class Scrape():
         sql_values = []
 
         count = 1
-        for prefID in range(8, 15):
+        for prefID in range(13, 15):
             url = base_url + SLASH + str(prefID) + \
                 SLASH + dt_now_y4m2d2
 
@@ -79,13 +86,13 @@ class Scrape():
                         continue
 
                     # 映画館の緯度経度を取得
-                    latlong = geocoder.Geocoder.getLatlong(self.theater)
+                    latlong = Geocoder.getLatlong(self.theater)
                     self.latitude = latlong['latitude']
                     self.longitude = latlong['longitude']
 
                     tdata = t.find_all('td')
                     if len(tdata) == 2:
-                        self.title = common.Common.cleansing(tdata[0].text)
+                        self.title = Common.cleansing(tdata[0].text)
 
                         a = tdata[0].find('a')
                         self.description = ''
@@ -114,10 +121,10 @@ class Scrape():
                             except Exception as e:
                                 self.release_date = ''
 
-                            self.description = common.Common.cleansing(soup_child.find_all(class_='j2')[
+                            self.description = Common.cleansing(soup_child.find_all(class_='j2')[
                                 1].text.split('\n')[0])
 
-                        json = tmdb.Tmdb.dataGet(self.title)
+                        json = Tmdb.dataGet(self.title)
                         self.drop_path = ''
                         self.poster_path = ''
                         self.review = '0.0'
@@ -158,17 +165,16 @@ class Scrape():
                             self.id = count
                             self.time = oneTime.split('～')[0].split('※')[0]
 
-                            common.Common.createValuesQuery(
+                            Common.createValuesQuery(
                                 sql_values, **self.__dict__)
                             count += 1
                 page += 1
 
         start = time.time()
         try:
-            delete.Delete.delete()
-            ins = insert.Insert()
-            ins.insert(sql_values)
+            Delete.delete()
+            Insert.insert(sql_values)
         except Exception as e:
             raise
         elapsed_time = time.time() - start
-        print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
+        print("elapsed_time:{}[sec]".format(format(elapsed_time)))

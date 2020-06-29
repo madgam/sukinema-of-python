@@ -1,6 +1,7 @@
-from urllib.parse import urlparse
-import mysql.connector
 import os
+from urllib.parse import urlparse
+
+from mysql.connector import MySQLConnection
 
 
 class Delete():
@@ -11,7 +12,7 @@ class Delete():
         sql = 'DELETE FROM MOVIES'
 
         url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
-        conn = mysql.connector.MySQLConnection(
+        conn = MySQLConnection(
             host=url.hostname,
             port=url.port,
             user=url.username,

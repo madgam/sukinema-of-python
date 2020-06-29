@@ -1,7 +1,8 @@
 # Google API モジュール
-from pygeocoder import Geocoder
-import googlemaps
 import os
+
+import googlemaps
+from pygeocoder import Geocoder
 
 
 class Geocoder():

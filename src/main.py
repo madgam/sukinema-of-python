@@ -1,12 +1,8 @@
-from modules import scrape
+from modules.scrape import Scrape
 
 
-class Main():
-
-    @classmethod
-    def init(cls):
-        sc = scrape.Scrape()
-        sc.getData()
+def init(self):
+    Scrape.getData()
 
 
-Main.init()
+init()
