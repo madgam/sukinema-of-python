@@ -9,7 +9,6 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-# from modules import common, delete, geocoder, insert, tmdb
 from modules.common import Common
 from modules.delete import Delete
 from modules.geocoder import Geocoder
@@ -173,8 +172,9 @@ class Scrape():
         start = time.time()
         try:
             Delete.delete()
-            Insert.insert(sql_values)
+            ins = Insert()
+            ins.insert(sql_values)
         except Exception as e:
             raise
         elapsed_time = time.time() - start
-        print("elapsed_time:{}[sec]".format(format(elapsed_time)))
+        print("elapsed_time:{}[sec]".format(elapsed_time))
