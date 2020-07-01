@@ -2,6 +2,7 @@ import ast
 import codecs
 import json
 import os
+import ssl
 import sys
 import urllib.parse as parse
 import urllib.request as request
@@ -11,6 +12,8 @@ class Tmdb():
 
     @classmethod
     def dataGet(cls, query):
+        # SSLエラー回避
+        ssl._create_default_https_context = ssl._create_unverified_context
 
         # 映画タイトルに字幕、吹替、IMAX、4Dが入っている場合はTrue
         def _isInMovieInfo(target):
