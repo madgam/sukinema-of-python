@@ -44,6 +44,7 @@ class Scrape():
         dt_now_y4m2d2 = dt_now.strftime('%Y%m%d')
 
         sql_values = []
+        Delete.delete()
 
         count = 1
         for prefID in range(13, 15):
@@ -170,11 +171,7 @@ class Scrape():
                 page += 1
 
         start = time.time()
-        try:
-            Delete.delete()
-            ins = Insert()
-            ins.insert(sql_values)
-        except Exception as e:
-            raise
+        ins = Insert()
+        ins.insert(sql_values)
         elapsed_time = time.time() - start
         print("elapsed_time:{}[sec]".format(elapsed_time))
